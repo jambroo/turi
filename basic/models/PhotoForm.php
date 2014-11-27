@@ -11,9 +11,6 @@ class PhotoForm extends Model
 	
 	public function rules()
 	{
-		return [
-			[['name', 'width', 'height'], 'required'],
-			['email', 'email', 'height'],
-		];
+		return [[['name', 'width', 'height'], 'required']];
 	}
 }
