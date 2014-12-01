@@ -1,0 +1,7 @@
+<?php
+
+return [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'sqlite:/some/path/database.db',
+    'charset' => 'utf8',
+];
