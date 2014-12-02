@@ -14,7 +14,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'password_hashed')->textInput(['maxlength' => 64]) ?>
+    <?= $form->field($model, 'newPassword')->passwordInput() ?>
+    <?= $form->field($model, 'newPasswordConfirm')->passwordInput() ?>
+
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
