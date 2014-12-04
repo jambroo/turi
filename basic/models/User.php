@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 
+use yii\web\IdentityInterface;
+
 /**
  * This is the model class for table "user".
  *
@@ -11,7 +13,7 @@ use Yii;
  * @property string $username
  * @property string $password_hashed
  */
-class User extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * @var string New password - for registration and changing password
@@ -73,7 +75,7 @@ class User extends \yii\db\ActiveRecord
      */
     public function verifyPassword($password)
     {
-        return Yii::$app->security->validatePassword($password, $this->password);
+        return Yii::$app->security->validatePassword($password, $this->password_hashed);
     }
 
     /**
@@ -102,5 +104,59 @@ class User extends \yii\db\ActiveRecord
             'username' => Yii::t('app', 'Username'),
             'password_hashed' => Yii::t('app', 'Password Hashed'),
         ];
+    }
+
+    /**
+     * Finds user by username
+     *
+     * @param  string      $username
+     * @return static|null
+     */
+    public static function findByUsername($username)
+    {
+        return static::findOne(["username" => $username]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return nul;;
+        //static::findOne(["api_key" => $token]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAuthKey()
+    {
+        return null;
+        //return $this->auth_key;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateAuthKey($authKey)
+    {
+        return false;
+        //return $this->auth_key === $authKey;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
