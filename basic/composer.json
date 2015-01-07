@@ -17,14 +17,35 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-swiftmailer": "*"
+        "yiisoft/yii2-swiftmailer": "*",
+        "guzzle/guzzle": "3.0.*",
+        "aws/aws-sdk-php": "2.*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*"
+        "yiisoft/yii2-faker": "*",
+        "yiisoft/yii2-mongodb": "*",
+        "codeception/codeception": "*",
+        "codeception/specify": "*",
+        "codeception/verify": "*",
+	"costa-rico/yii2-images": "*",
+        "jambroo/yii2-aws": "*"
     },
+    "repositories": [
+    {
+        "type": "package",
+        "package": {
+            "name": "jambroo/yii2-aws",
+            "version": "1.0",
+            "source": {
+	        "url": "j@ns2.porttest.net:git/yii2-aws",
+                "type": "git",
+                "reference": "master"
+            }
+        }
+    }],
     "config": {
         "process-timeout": 1800
     },
@@ -50,5 +71,10 @@
             "npm-asset-library": "vendor/npm",
             "bower-asset-library": "vendor/bower"
         }
+    },
+    "autoload": {
+        "psr-0": {
+            "jambroo\\aws": "/var/www/turi/basic/vendor/jambroo/yii2-aws"
+	}
     }
 }
