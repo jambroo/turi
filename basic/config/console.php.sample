@@ -28,6 +28,14 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'aws' => [
+            'class' => 'jambroo\aws\factory\AWSFactory',
+            'config' => [
+                'key'    => '?',
+                'secret' => '?',
+                'region'  => '?'
+            ]
+        ],
         'db' => $db,
     ],
     'params' => $params,
