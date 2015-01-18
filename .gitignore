@@ -30,9 +30,11 @@ phpunit.phar
 
 tests/_output/*
 
-config/db.php
 config/console.php
 config/web.php
+
+config/db.php
+config/aws.php
 
 data/
 .Trash*

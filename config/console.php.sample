@@ -4,6 +4,7 @@ Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
 $params = require(__DIR__ . '/params.php');
 $db = require(__DIR__ . '/db.php');
+$aws = require(__DIR__ . '/aws.php');
 
 return [
     'id' => 'basic-console',
@@ -28,14 +29,7 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
-        'aws' => [
-            'class' => 'jambroo\aws\factory\AWSFactory',
-            'config' => [
-                'key'    => '?',
-                'secret' => '?',
-                'region'  => '?'
-            ]
-        ],
+        'aws' => $aws,
         'db' => $db,
     ],
     'params' => $params,

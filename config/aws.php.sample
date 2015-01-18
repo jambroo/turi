@@ -1,0 +1,10 @@
+<?php
+
+return [
+    'class' => 'jambroo\aws\factory\AWSFactory',
+    'config' => [
+        'key'    => '?',
+        'secret' => '?',
+        'region'  => '?'
+    ]
+];
