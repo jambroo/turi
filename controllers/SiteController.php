@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Photo;
 use app\models\PhotoForm;
 
 class SiteController extends Controller
@@ -60,7 +61,6 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) &&
             $model->validate()) {
             // valid data
-
             return $this->render('photo-confirm', ['model' => $model]);            
         } else {
             return $this->render('photo', ['model' => $model]);            
@@ -94,5 +94,16 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function actionShow() {
+        $model = new Photo();
+        if (!$model->load(array('Photo' => Yii::$app->request->get()))) {
+            return $this->goHome();
+        }
+
+        return $this->render('show', [
+            'model' => $model
+        ]);
     }
 }
