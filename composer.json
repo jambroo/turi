@@ -18,8 +18,8 @@
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "guzzle/guzzle": "3.0.*",
-        "aws/aws-sdk-php": "2.*"
+        "guzzle/guzzle": "~3.9",
+        "aws/aws-sdk-php": "~2.7"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
@@ -30,7 +30,7 @@
         "codeception/codeception": "*",
         "codeception/specify": "*",
         "codeception/verify": "*",
-	"costa-rico/yii2-images": "*",
+        "costa-rico/yii2-images": "*",
         "jambroo/yii2-aws": "*"
     },
     "repositories": [
