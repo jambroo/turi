@@ -2,15 +2,14 @@
 namespace app\models;
 
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 class PhotoForm extends Model
 {
-	public $name;
-	public $width;
-	public $height;
+	public $image;
 	
 	public function rules()
 	{
-		return [[['name', 'width', 'height'], 'required']];
+		return [[['image'], 'file']];
 	}
 }

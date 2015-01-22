@@ -5,11 +5,15 @@ namespace app\controllers;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Photo;
 use app\models\PhotoForm;
+
+use jambroo\aws\factory\AwsFactory;
+use jambroo\aws\factory\S3RenameUploadFactory;
 
 class SiteController extends Controller
 {
@@ -58,14 +62,32 @@ class SiteController extends Controller
     {
         $model = new PhotoForm;
 
-        if ($model->load(Yii::$app->request->post()) &&
-            $model->validate()) {
-            // valid data
-            return $this->render('photo-confirm', ['model' => $model]);            
-        } else {
-            return $this->render('photo', ['model' => $model]);            
+        if (Yii::$app->request->isPost) {
+            $model->image = UploadedFile::getInstance($model, 'image');
+
+            if ($model->image && $model->validate()) {
+                $config = Yii::$app->aws;
+                $s3RenameUploadFactory = new S3RenameUploadFactory();
+                $s3RenameUpload = $s3RenameUploadFactory->createService($config);
+
+                // Should store image name ($model->image->name) in db here
+                // and use some ID as the filename
+
+                $s3RenameUpload->setBucket($config->config['bucket']);
+                $stream = $s3RenameUpload->getFinalTarget(array(
+                    'tmp_name' => time()
+                ));
+
+                if (file_put_contents($stream, file_get_contents($model->image->tempName)) === false) {
+                    throw new \Exception('Error uploading to S3.');
+                }
+
+                // Should redirect to image view page
+                return $this->goHome();
+            }
         }
 
+        return $this->render('photo', ['model' => $model]);
     }
 
     public function actionLogin()
@@ -105,5 +127,5 @@ class SiteController extends Controller
         return $this->render('show', [
             'model' => $model
         ]);
-    }
+    }    
 }
