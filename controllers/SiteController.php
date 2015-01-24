@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Photo;
+use app\models\PhotoNew;
 use app\models\PhotoForm;
 
 use jambroo\aws\factory\AwsFactory;
@@ -71,19 +72,26 @@ class SiteController extends Controller
                 $s3RenameUpload = $s3RenameUploadFactory->createService($config);
 
                 // Should store image name ($model->image->name) in db here
-                // and use some ID as the filename
+                // and use some ID as the filename on s3
+                $photo = new Photo;
+                $photo->bucket = $config->config['bucket'];
+                $photo->image = $model->image->name;
+                if (!$photo->save(true, ['bucket', 'image'])) {
+                    throw new \Exception("Error uploading image.");
+                }
 
                 $s3RenameUpload->setBucket($config->config['bucket']);
                 $stream = $s3RenameUpload->getFinalTarget(array(
-                    'tmp_name' => time()
+                    'tmp_name' => $photo->id
                 ));
 
                 if (file_put_contents($stream, file_get_contents($model->image->tempName)) === false) {
+                    $photo->delete();
                     throw new \Exception('Error uploading to S3.');
                 }
 
                 // Should redirect to image view page
-                return $this->goHome();
+                return $this->actionShow($photo->id);
             }
         }
 
@@ -118,14 +126,21 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionShow() {
+    public function actionShow($id = false) {
         $model = new Photo();
-        if (!$model->load(array('Photo' => Yii::$app->request->get()))) {
+        if ($id === false) {
+            $id = Yii::$app->request->getQueryParam('id');
+        }
+
+        $photo = $model->findOne($id);
+        if (!$photo) {
             return $this->goHome();
         }
 
+        $photo->setUrl();
+        
         return $this->render('show', [
-            'model' => $model
+            'model' => $photo
         ]);
     }    
 }
