@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 
 use jambroo\aws\factory\AwsFactory;
 use jambroo\aws\factory\S3LinkViewHelperFactory;
+use jambroo\aws\factory\CloudFrontLinkViewHelperFactory;
 
 class Photo extends ActiveRecord
 {
@@ -45,11 +46,14 @@ class Photo extends ActiveRecord
   {
 		// Generate actual S3 Link
 		$config = Yii::$app->aws;
-	  $s3LinkViewHelperFactory = new S3LinkViewHelperFactory();
-	  $s3LinkViewHelper = $s3LinkViewHelperFactory->createService($config);
+	  $cloudFrontLinkViewHelperFactory = new CloudFrontLinkViewHelperFactory();
+	  $cloudFrontLinkViewHelper = $cloudFrontLinkViewHelperFactory->createService($config);
 	  $expires = time() + 10;
 
-	  $this->url = $s3LinkViewHelper->__invoke($this->id, $this->bucket, $expires);
+	  $this->url = $cloudFrontLinkViewHelper->__invoke($this->id, $config->config['cloudfront-key']['server'], $expires,
+      $config->config['cloudfront-key']['key'],
+      $config->config['cloudfront-key']['id']
+    );
   }
 
   public function load($data, $formName = null)

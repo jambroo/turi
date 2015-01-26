@@ -85,7 +85,13 @@ class SiteController extends Controller
                     'tmp_name' => $photo->id
                 ));
 
-                if (file_put_contents($stream, file_get_contents($model->image->tempName)) === false) {
+                $context = stream_context_create(array(
+                    's3' => array(
+                        'ACL' => 'authenticated-read'
+                    )
+                ));
+
+                if (file_put_contents($stream, file_get_contents($model->image->tempName), 0, $context) === false) {
                     $photo->delete();
                     throw new \Exception('Error uploading to S3.');
                 }
