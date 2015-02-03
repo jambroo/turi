@@ -12,6 +12,7 @@ use app\models\ContactForm;
 use app\models\Photo;
 use app\models\PhotoNew;
 use app\models\PhotoForm;
+use yii\imagine\Image;
 
 use jambroo\aws\factory\AwsFactory;
 use jambroo\aws\factory\S3RenameUploadFactory;
@@ -79,6 +80,20 @@ class SiteController extends Controller
                 $s3RenameUploadFactory = new S3RenameUploadFactory();
                 $s3RenameUpload = $s3RenameUploadFactory->createService($config);
 
+                // Create thumbnail
+                // Check if $model->image has file extension
+                if (strrpos($model->image, '.') === false) {
+                    throw new \Exception("Image must have file extension, e.g. .JPG.");
+                }
+
+                try {
+                    $thumbnail = tempnam("/tmp", 'turi').substr($model->image, strrpos($model->image, '.'));
+                    Image::thumbnail($model->image->tempName, 240, 200)
+                        ->save(Yii::getAlias($thumbnail));
+                } catch (\Exception $e) {
+                    throw new \Exception("Error occurred creating thumbnail of image.");
+                }
+
                 // Should store image name ($model->image->name) in db here
                 // and use some ID as the filename on s3
                 $photo = new Photo;
@@ -89,19 +104,21 @@ class SiteController extends Controller
                 }
 
                 $s3RenameUpload->setBucket($config->config['bucket']);
-                $stream = $s3RenameUpload->getFinalTarget(array(
-                    'tmp_name' => $photo->id
-                ));
+                foreach (array('' => $model->image->tempName, '_t' => $thumbnail) as $postfix => $path) {
+                    $stream = $s3RenameUpload->getFinalTarget(array(
+                        'tmp_name' => $photo->id.$postfix
+                    ));
 
-                $context = stream_context_create(array(
-                    's3' => array(
-                        'ACL' => 'private'
-                    )
-                ));
+                    $context = stream_context_create(array(
+                        's3' => array(
+                            'ACL' => 'private'
+                        )
+                    ));
 
-                if (file_put_contents($stream, file_get_contents($model->image->tempName), 0, $context) === false) {
-                    $photo->delete();
-                    throw new \Exception('Error uploading to S3.');
+                    if (file_put_contents($stream, file_get_contents($path), 0, $context) === false) {
+                        $photo->delete();
+                        throw new \Exception('Error uploading to S3.');
+                    }
                 }
 
                 // Should redirect to image view page
