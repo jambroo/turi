@@ -68,6 +68,14 @@ class SiteController extends Controller
 
             if ($model->image && $model->validate()) {
                 $config = Yii::$app->aws;
+                // Assuming this is not being run inside Amazon EC2 so it is
+                // mandatory for the $config to have 'key' and 'secret' keys
+                if (!array_key_exists('key', $config->config) ||
+                    !array_key_exists('secret', $config->config) ||
+                    !$config->config['key'] ||
+                    !$config->config['secret']) {
+                    throw new \Exception("Application must be configured with AWS key and AWS secret value.");
+                }
                 $s3RenameUploadFactory = new S3RenameUploadFactory();
                 $s3RenameUpload = $s3RenameUploadFactory->createService($config);
 
@@ -87,7 +95,7 @@ class SiteController extends Controller
 
                 $context = stream_context_create(array(
                     's3' => array(
-                        'ACL' => 'authenticated-read'
+                        'ACL' => 'private'
                     )
                 ));
 
