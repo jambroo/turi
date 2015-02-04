@@ -32,7 +32,8 @@
         "codeception/verify": "*",
         "costa-rico/yii2-images": "*",
         "jambroo/yii2-aws": "*",
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "*",
+        "2amigos/yii2-gallery-widget" : "*"
     },
     "repositories": [
     {
