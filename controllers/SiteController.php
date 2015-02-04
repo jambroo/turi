@@ -12,6 +12,7 @@ use app\models\ContactForm;
 use app\models\Photo;
 use app\models\PhotoNew;
 use app\models\PhotoForm;
+use app\models\PhotoSearch;
 use yii\imagine\Image;
 
 use jambroo\aws\factory\AwsFactory;
@@ -57,7 +58,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        // Disabling index until galleries implemented
+        //return $this->render('index');
+        return $this->actionPhotos();
     }
 
     public function actionPhoto()
@@ -157,7 +160,8 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionShow($id = false) {
+    public function actionShow($id = false)
+    {
         $model = new Photo();
         if ($id === false) {
             $id = Yii::$app->request->getQueryParam('id');
@@ -168,10 +172,28 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $photo->setUrl();
-        
         return $this->render('show', [
-            'model' => $photo
+            'model' => $photo,
+            'thumb' => ["url" => $photo->getUrl(), "src" => $photo->getThumb()]
         ]);
-    }    
+    }
+
+    public function actionPhotos()
+    {
+        $searchModel = new PhotoSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $photos = [];
+        foreach ($dataProvider->getModels() as $model) {
+            $photos []= ['url' => $model->getUrl(),
+                         'src' => $model->getThumb()];
+        }
+
+        // Should add searchModel and dataProvider here to assist with pagination
+        return $this->render('photos', [
+            //'searchModel' => $searchModel,
+            //'dataProvider' => $dataProvider,
+            'photos' => $photos
+        ]);
+    }
 }
