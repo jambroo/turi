@@ -35,8 +35,8 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'Upload Photo', 'url' => ['/site/photo']],
+                    ['label' => 'Home', 'url' => ['/photo/index']],
+                    ['label' => 'Upload Photo', 'url' => ['/photo/photo']],
                     ['label' => 'About', 'url' => ['/site/about']],
                     //['label' => 'View Photos', 'url' => ['/site/photos']],
                     Yii::$app->user->isGuest ?
@@ -47,11 +47,12 @@ AppAsset::register($this);
                 ],
             ]);
             NavBar::end();
+
         ?>
 
         <div class="container">
             <?= Breadcrumbs::widget([
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : []
             ]) ?>
             <?= $content ?>
         </div>
