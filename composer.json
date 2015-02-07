@@ -33,7 +33,8 @@
         "costa-rico/yii2-images": "*",
         "jambroo/yii2-aws": "*",
         "yiisoft/yii2-imagine": "*",
-        "2amigos/yii2-gallery-widget" : "*"
+        "2amigos/yii2-gallery-widget" : "*",
+        "yiisoft/yii2-faker": "*"
     },
     "repositories": [
     {
