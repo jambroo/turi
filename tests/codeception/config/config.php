@@ -1,13 +1,13 @@
 <?php
 /**
- * Application configuration shared by all test types
+ * Application configuration shared by all applications and test types
  */
 return [
     'controllerMap' => [
         'fixture' => [
             'class' => 'yii\faker\FixtureController',
-            'fixtureDataPath' => '@tests/codeception/fixtures',
-            'templatePath' => '@tests/codeception/templates',
+            'fixtureDataPath' => '@tests/codeception/fixtures/data',
+            'templatePath' => '@tests/codeception/templates/fixtures',
             'namespace' => 'tests\codeception\fixtures',
         ],
     ],
