@@ -95,4 +95,17 @@ class Photo extends ActiveRecord
   	}
   	return false;
   }
+
+  /**
+   * @inheritdoc
+   */
+  public static function findIdentity($id)
+  {
+      return static::findOne($id);
+  }
+
+  public function getId()
+  {
+    return $this->id;
+  }
 }
